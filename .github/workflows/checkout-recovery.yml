@@ -28,6 +28,8 @@ jobs:
           PY
       - name: Verify recovery preserves source edits and outputs
         run: python3 -m unittest discover -s tests -p 'test_restore_checkout.py'
+      - name: Verify build startup and failure handling
+        run: python3 -m unittest discover -s tests -p 'test_build_gcam.py'
       - name: Check build helper and documented Bash syntax
         run: |
           bash -n apply-build-fixes.sh
