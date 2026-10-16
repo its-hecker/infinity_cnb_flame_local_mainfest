@@ -38,6 +38,6 @@ jobs:
           from pathlib import Path
           import re
           import subprocess
-          for block in re.findall(r"\x60\x60\x60bash\n(.*?)\n\x60\x60\x60", Path("README.md").read_text() + "\n" + Path("docs/GCAM_EXPERIMENTAL.md").read_text(), re.S):
+          for block in re.findall(r"\x60\x60\x60bash\n(.*?)\n\x60\x60\x60", Path("README.md").read_text() + "\n" + "\n".join(path.read_text() for path in Path("docs").glob("*.md")), re.S):
               subprocess.run(["bash", "-n"], input=block, text=True, check=True)
           PY

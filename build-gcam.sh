@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build Flame with the pinned stock Google Camera experiment.
+# Build Flame stable with the pinned stock Google Camera package.
 set -eo pipefail
 trap 'build_exit_code=$?; printf "Flame build stopped at line %s (exit %s).\n" "$LINENO" "$build_exit_code" >&2' ERR
 

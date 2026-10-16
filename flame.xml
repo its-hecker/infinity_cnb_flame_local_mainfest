@@ -6,11 +6,11 @@
   <!-- Coral is the shared source directory for both Pixel 4 models. -->
   <project name="infinity_cnb_android_device_google_coral"
            path="device/google/coral" remote="hecker-flame"
-           revision="gcam-experimental-flame" />
+           revision="infinity-4.1-flame" />
 
   <project name="infinityx_cnb_vendor_google_flame"
            path="vendor/google/flame" remote="hecker-flame"
-           revision="gcam-experimental-flame" />
+           revision="infinity-4.1-flame" />
 
   <!-- floral_defconfig and its DTBO set already support Coral and Flame. -->
   <project name="infinity_cnb_kernel_google_msm-4.14"
