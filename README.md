@@ -44,8 +44,9 @@ plus Motion Sense/glow/Air DJ, were tested on that build.
 These experimental branches inherit that work and retain Flame's camera HAL,
 PixelCameraServicesFlame, camera configuration, Soli firmware, radio and Active
 Edge calibration. The Google Camera package, revocable permission grants and
-package-specific certificate policy are added. The existing camera remains
-available during testing. No kernel or Face/Motion runtime changes are needed.
+package-specific certificate policy are added. Aperture is omitted from the
+Flame product; GoogleCameraFlame is the bundled camera. No kernel or Face/Motion
+runtime changes are needed.
 
 The integrated Face ID and Motion Sense implementation is retained; the
 standalone `floral-3D-faceid-plugin` and `floral-motionsense-plugin` are not used.

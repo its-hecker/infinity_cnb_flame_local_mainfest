@@ -15,8 +15,9 @@ Flame Android 17 still needs a complete ROM build and physical-device testing.
 The device checkout remains **device/google/coral**, with Flame vendor at
 **vendor/google/flame**. The new branches inherit the tested Flame 3D Face ID
 and Motion Sense implementation from `infinity-4.1-flame`. The camera HAL,
-firmware, kernel, other apps, and existing Face/Motion runtime code are retained.
-Only the Flame product selects `GoogleCameraFlame`.
+firmware, kernel, and existing Face/Motion runtime code are retained.
+Only the Flame product selects `GoogleCameraFlame`. Aperture is omitted by setting
+`PRODUCT_NO_CAMERA := true` before inheriting Infinity's common product.
 
 ## Switch an existing Flame source checkout
 
