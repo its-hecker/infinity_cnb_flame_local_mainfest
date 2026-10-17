@@ -25,16 +25,22 @@ Run in the existing persistent Byobu/Tmux session after any build has finished:
 ```bash
 cd ~/infinityx-flame-gcam &&
 git -C .repo/local_manifests fetch origin main:refs/remotes/origin/main &&
-git -C .repo/local_manifests switch main &&
+if git -C .repo/local_manifests show-ref --verify --quiet refs/heads/main; then
+    git -C .repo/local_manifests switch main
+else
+    git -C .repo/local_manifests switch --no-track -c main refs/remotes/origin/main
+fi &&
 git -C .repo/local_manifests pull --ff-only origin main &&
 repo sync -c -j8 --fail-fast device/google/coral vendor/google/flame &&
 git -C kernel/google/msm-4.14 submodule update --init --recursive &&
 bash .repo/local_manifests/build-gcam.sh
 ```
 
-`git switch main` creates the local tracking branch if the checkout was cloned
-with only `gcam-experimental-flame`. Conflicting local edits cause Git/Repo to
-stop for review. The two selected projects contain this promotion; existing
+A single-branch experimental clone does not automatically recognise `origin/main`
+for branch guessing. These commands create local `main` explicitly with
+`--no-track` when needed and pull from `origin main` explicitly, without changing
+the existing fetch configuration. Conflicting local edits cause Git/Repo to stop
+for review. The two selected projects contain this promotion; existing
 local Soong/header changes and the build output directory are retained.
 
 ## New checkout
