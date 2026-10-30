@@ -53,7 +53,7 @@ authentication, plus Motion Sense/glow/Air DJ, were tested before the GCam
 experiment. The maintainer has now confirmed GCam works on Flame too. This
 repository supplies build sources; use the phone checklist below for future changes.
 
-## New checkout
+## Complete build from mkdir
 
 Use a separate Linux build directory so the working Coral checkout is kept.
 Use a persistent Byobu/Tmux session on ServerHive. Install the ROM build
@@ -62,13 +62,19 @@ dependencies and Git LFS before syncing.
 ```bash
 mkdir -p ~/infinityx-flame &&
 cd ~/infinityx-flame &&
-repo init -u https://github.com/ProjectInfinity-X/manifest -b 17 --git-lfs &&
-git clone --branch main --single-branch \
-    https://github.com/its-hecker/infinity_cnb_flame_local_mainfest \
-    .repo/local_manifests &&
+git lfs install &&
+repo init -u https://github.com/ProjectInfinity-X/manifest.git -b 17 --git-lfs &&
+git clone --branch main --single-branch https://github.com/its-hecker/infinity_cnb_flame_local_mainfest.git .repo/local_manifests &&
 repo sync -c -j8 --fail-fast --no-clone-bundle --no-tags --optimized-fetch &&
-git -C kernel/google/msm-4.14 submodule update --init --recursive
+git -C kernel/google/msm-4.14 submodule update --init --recursive &&
+git -C vendor/google/flame lfs pull &&
+bash .repo/local_manifests/build-gcam.sh
 ```
+
+This single block syncs sources, initializes KernelSU, retrieves the vendor
+LFS payload and runs the Flame build helper. The helper selects the target,
+checks Camera/Face ID/protobuf inputs, and builds policy followed by the ROM.
+The `&&` chain stops at the first failure; preserve the provider's RBE environment.
 
 This manifest replaces the Coral local manifest for this checkout; do not
 install both. An existing `roomservice.xml` containing any of the same five
