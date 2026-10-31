@@ -70,6 +70,19 @@ git -C kernel/google/msm-4.14 submodule update --init --recursive &&
 git -C vendor/google/flame lfs pull &&
 bash .repo/local_manifests/build-gcam.sh
 ```
+Sign Rom with Private Keys
+
+```bash
+cd ~/infinityx-flame
+
+git clone https://github.com/ProjectInfinity-X/vendor_infinity-priv_keys-template \
+  vendor/infinity-priv/keys
+
+cd vendor/infinity-priv/keys
+./keys.sh
+
+cd ~/infinityx-flame
+```
 
 This single block syncs sources, initializes KernelSU, retrieves the vendor
 LFS payload and runs the Flame build helper. The helper selects the target,
