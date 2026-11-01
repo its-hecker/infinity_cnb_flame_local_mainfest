@@ -53,7 +53,48 @@ authentication, plus Motion Sense/glow/Air DJ, were tested before the GCam
 experiment. The maintainer has now confirmed GCam works on Flame too. This
 repository supplies build sources; use the phone checklist below for future changes.
 
+## Complete build from mkdir (default jobs)
+
+Use a fresh Flame directory, separate from Coral, with the normal Android 17
+build dependencies, Repo and Git LFS installed. On ServerHive, run this whole
+block in the provider's initialized Byobu/Tmux/RBE shell and keep RBE enabled.
+Choose this block or the original 8-job flow below for a fresh checkout;
+`&&` stops at the first failure.
+
+```bash
+mkdir -p ~/infinityx-flame &&
+cd ~/infinityx-flame &&
+git lfs install &&
+repo init -u https://github.com/ProjectInfinity-X/manifest.git -b 17 --git-lfs &&
+git clone --branch main --single-branch https://github.com/its-hecker/infinity_cnb_flame_local_mainfest.git .repo/local_manifests &&
+repo sync -c --fail-fast --no-clone-bundle --no-tags --optimized-fetch &&
+git -C kernel/google/msm-4.14 submodule update --init --recursive &&
+git -C vendor/google/flame lfs pull &&
+source build/envsetup.sh &&
+breakfast lineage_flame-userdebug &&
+test "$TARGET_PRODUCT" = lineage_flame &&
+test "$TARGET_BUILD_VARIANT" = userdebug &&
+test "$(build/soong/soong_ui.bash --dumpvar-mode USE_RBE)" = true &&
+python3 vendor/google/flame/camera/tools/prepare_camera.py --check-hashes &&
+bash .repo/local_manifests/apply-build-fixes.sh &&
+python3 device/google/coral/faceunlock/tools/apply_framework_fixes.py --apply &&
+python3 vendor/google/flame/tools/check_flame_port.py --device-root device/google/coral &&
+mka selinux_policy &&
+mka bacon
+```
+
+No `-j` override is passed to `mka`, so the ROM/provider's build wrapper selects
+its default parallelism for both policy and ROM compilation. The source sync
+uses Repo's own default download parallelism. The full block retains the camera,
+Face ID, port, target and RBE checks. Use this block for default jobs; the original
+`build-gcam.sh` helper below still builds with eight jobs.
+ROM output: `out/target/product/flame/*.zip`.
+
 ## Complete build from mkdir
+
+**8 build jobs:** this original flow calls `build-gcam.sh`, which explicitly
+runs `mka -j8` for policy and ROM compilation. The `repo sync -j8` option
+separately controls source downloads.
 
 Use a separate Linux build directory so the working Coral checkout is kept.
 Use a persistent Byobu/Tmux session on ServerHive. Install the ROM build
@@ -96,6 +137,9 @@ The upstream manifest branch `17` tracks the ROM sources; their version
 configuration determines the reported release. Verify it is 4.1 before building.
 
 ## Build
+
+**8 build jobs:** these original manual commands and the helper shown below
+retain the same eight-job compilation limit.
 
 ```bash
 cd ~/infinityx-flame &&
